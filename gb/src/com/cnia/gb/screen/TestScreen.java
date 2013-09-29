@@ -116,10 +116,6 @@ public class TestScreen implements Screen {
 		for (Sprite sprite : sprites)
 			sprite.draw(batch);
 		playa.render(batch);
-		Art.drawFont("X:"+playa.currentPosition.x, batch, 0, 48);
-		Art.drawFont("Y:"+playa.currentPosition.y, batch, 0, 32);
-		Art.drawFont("X:"+playa.position.x, batch, 0, 16);
-		Art.drawFont("Y:"+playa.position.y, batch, 0, 0);
 		batch.end();
 	}
 
