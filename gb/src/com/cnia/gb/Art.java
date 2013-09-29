@@ -1,26 +1,34 @@
 package com.cnia.gb;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Art {
 
-	// Sleep
+	public static String alpha = "ABCDEFGH"+"IJKLMNOP"+"QRSTUVWX"+"YZ.: 123"+"4567890-";
 	
-	public static TextureRegion[][] player;
+	public static Texture start, credits, select, gb, cni;
+	public static TextureRegion[][] player, screen, object, glyph;
 	
 	public static BitmapFont font, smallFont;
 	public static int fontSize = 39, smallFontSize = 14;
 	
 	public static void loadAll() {
 
-		player = loadTexture("player.png", 16, 16);
+		start = loadTexture("start.png");
+		credits = loadTexture("credits.png");
+		select = loadTexture("select.png");
+		gb = loadTexture("gameboy.png");
+		cni = loadTexture("cniangel.png");
 		
-		font = loadBitmapFont("Dynarec.ttf", fontSize, false);
-		smallFont = loadBitmapFont("Dynarec.ttf", smallFontSize, false);
+		player = loadTexture("player.png", 16, 16);
+		screen = loadTexture("screen.png", 160, 144);
+		object = loadTexture("object.png", 16, 16);
+		glyph = loadTexture("alpha.png", 16, 16);
 	}
 	
 	/**
@@ -63,17 +71,22 @@ public class Art {
 		return result;
 	}
 	
-	public static BitmapFont loadBitmapFont(String path, int size, boolean isFixedWidth)
-	{
-		BitmapFont output;
-		String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
-		FreeTypeFontGenerator ftg = new FreeTypeFontGenerator(
-				Gdx.files.internal("data/art/" + path));
-		output = ftg.generateFont(size, FONT_CHARACTERS, false);
-		if (isFixedWidth)
-			output.setFixedWidthGlyphs(FONT_CHARACTERS);
-		ftg.dispose();
-		return output;
+	public static void drawFont(String msg, SpriteBatch b, float x, float y) {
+		msg=msg.toUpperCase();	
+		for(int i=0;i<msg.length();i++){
+		int letter=alpha.indexOf(msg.charAt(i));
+		int xx=letter%8;
+		int yy=letter/8;
+		b.draw(glyph[xx][yy], x+i*glyph[xx][yy].getRegionWidth(), y);
+		}
+	}
+	
+	public static void dispose() {
+		start.dispose();
+		credits.dispose();
+		select.dispose();
+		gb.dispose();
+		cni.dispose();
 	}
 
 }

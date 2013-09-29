@@ -31,7 +31,6 @@ public class Input implements InputProcessor {
 		case Keys.DOWN: button = DOWN; break;
 		case Keys.Z: button = Z; break;
 		case Keys.X: button = X; break;
-		case Keys.SHIFT_LEFT: button = SELECT; break;
 		case Keys.SHIFT_RIGHT: button = SELECT; break;
 		case Keys.ENTER: button = START; break;
 		}

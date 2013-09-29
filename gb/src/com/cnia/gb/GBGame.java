@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.cnia.gb.screen.CreditsScreen;
+import com.cnia.gb.screen.SplashScreen;
 import com.cnia.gb.screen.TestScreen;
 
 public class GBGame extends Game {
@@ -17,6 +19,8 @@ public class GBGame extends Game {
 	
 	/* Screens */
 	public TestScreen test;
+	public SplashScreen splash;
+	public CreditsScreen cred;
 	
 	@Override
 	public void create() {
@@ -35,9 +39,9 @@ public class GBGame extends Game {
 		Gdx.input.setInputProcessor(input);
 		Art.loadAll();
 		
-		if (test == null) test = new TestScreen(this);
+		if (splash == null) splash = new SplashScreen(this);
 		
-		setScreen(test);
+		setScreen(splash);
 		
 	}
 
