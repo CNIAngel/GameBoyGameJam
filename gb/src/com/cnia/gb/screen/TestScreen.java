@@ -2,19 +2,17 @@ package com.cnia.gb.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.cnia.gb.Art;
@@ -22,6 +20,7 @@ import com.cnia.gb.GBGame;
 import com.cnia.gb.Input;
 import com.cnia.gb.Sfx;
 import com.cnia.gb.entity.Player;
+import com.cnia.gb.entity.Spike;
 
 public class TestScreen implements Screen {
 
@@ -40,8 +39,11 @@ public class TestScreen implements Screen {
 	OrthogonalTiledMapRenderer renderer;
 	float unitScale = 1/16f;
 	
-	public Array<Rectangle> tiles = new Array<Rectangle>();
+	public Array<Spike> spikes = new Array<Spike>();
 	public Array<Sprite> sprites = new Array<Sprite>();
+	
+	float spawnX, spawnY;
+	int level = 0;
 	
 	
 	public TestScreen(GBGame game) {
@@ -56,42 +58,60 @@ public class TestScreen implements Screen {
 		Sfx.load(1);
 		Sfx.play(1);
 		
-		loadMap(0);
+		loadMap(level);
+		loadObjects();
 		loadAssets();
+		
 		
 		
 	}
 	
 	private void loadAssets() {
 		// TODO Auto-generated method stub
-		playa = new Player(game, layer);
+		playa = new Player(spawnX, spawnY, game, layer);
 	}
 	
 	private void loadMap(int mapNumber) {
 		
 		map = new TmxMapLoader().load("data/levels/level"+mapNumber+".tmx");
-		
 		layer = (TiledMapTileLayer)map.getLayers().get(0);
+		cam = new OrthographicCamera();
+		renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+		cam.setToOrtho(false, 10, 9);
+		
+	}
+	
+	private void loadObjects() {
+		// Clear out all those objects spawned beforehand
+		spikes.clear();
+		sprites.clear();
 		
 		for(MapObject object : map.getLayers().get("objects").getObjects())
             if (object instanceof RectangleMapObject) {
             	if (object.getProperties().containsKey("spike")) {
             		Rectangle rect = ((RectangleMapObject) object).getRectangle();
-                	Sprite spike = new Sprite(Art.object[1][0]);
-                	spike.setBounds(rect.x, rect.y, rect.width, rect.height);
-                	sprites.add(spike);
-            	} else if (object.getProperties().containsKey("button")) {
+                	Spike spike = new Spike(rect.x, rect.y);
+                	spikes.add(spike);
+            	}
+            		
+            	if (object.getProperties().containsKey("button")) {
             		Rectangle rect = ((RectangleMapObject) object).getRectangle();
                 	Sprite button = new Sprite(Art.object[0][5]);
                 	button.setBounds(rect.x, rect.y, rect.width, rect.height);
                 	sprites.add(button);
+            	} 
+            	if (object.getProperties().containsKey("exit")) {
+            		Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            		exitPoint.set(rect);
+            		System.out.println("EXIT SET!");
+            	}
+            	if (object.getProperties().containsKey("start")) {
+            		Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            		spawnX = rect.x;
+            		spawnY = rect.y;
+            		System.out.println("SPAWN SET!");
             	}
             }
-		 
-		cam = new OrthographicCamera();
-		renderer = new OrthogonalTiledMapRenderer(map, unitScale);
-		cam.setToOrtho(false, 10, 9);
-		
 	}
 
 	@Override
@@ -100,21 +120,30 @@ public class TestScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		playa.update(delta);
+		
+		if (playa.bounds.contains(exitPoint)) {
+		loadMap(level++);
+		loadObjects();
+		loadAssets();
+		}
+		
+		
 		
 		cam.update();
 		renderer.setView(cam);
 		renderer.render();
 		
-		if (playa.bounds.overlaps(exitPoint)) {
-			playa.setPosition(-16, 32);
-			loadMap(1);
-		}
 		
-		playa.update(delta);
+			
 		
 		batch.begin();
 		for (Sprite sprite : sprites)
 			sprite.draw(batch);
+		
+		for (Spike spike: spikes)
+			spike.render(batch);
+		
 		playa.render(batch);
 		batch.end();
 	}

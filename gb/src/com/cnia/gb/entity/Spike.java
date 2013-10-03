@@ -4,25 +4,26 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.cnia.gb.Art;
 
 public class Spike implements Entity {
 
-	public Vector2 position;
-	Rectangle bounds;
+	public Vector2 position = new Vector2();
+	Rectangle bounds = new Rectangle();
 	Sprite cursprite;
 	float width, height;
-	public enum state {
-		ON, OFF;
-	}
+	int state;
 	
-	public Spike(int x, int y) {
+	public Spike(float x, float y) {
 		// TODO Auto-generated constructor stub
 		this.position.x = x;
 		this.position.y = y;
 		width = 16;
 		height = 16;
-		cursprite = new Sprite();
+		cursprite = new Sprite(Art.object[1][0]);
+		cursprite.setBounds(x, y, width, height);
 		bounds = getBounds();
+		state = 1;
 	}
 	
 	@Override

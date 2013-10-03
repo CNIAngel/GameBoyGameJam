@@ -23,7 +23,7 @@ public class Player {
 	public Vector2 position= new Vector2(0, 0), currentPosition= new Vector2(0, 0);
 	
 	
-	public Player(GBGame game, TiledMapTileLayer layer) {
+	public Player(float x, float y,GBGame game, TiledMapTileLayer layer) {
 		this.game = game;
 		this.collisionLayer = layer;
 		
@@ -38,8 +38,8 @@ public class Player {
 		position = new Vector2();
 		
 		// Set it up yo
-		position.set(16, 16);
-		currentPosition.set(16, 16);
+		position.set(x, y);
+		currentPosition.set(x, y);
 		currentSprite.setBounds(position.x, position.y, 16, 16);
 		bounds.set(position.x, position.y, 16, 16);
 		
