@@ -102,8 +102,10 @@ public class TestScreen implements Screen {
             	} 
             	if (object.getProperties().containsKey("exit")) {
             		Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            		exitPoint = new Rectangle();
             		exitPoint.set(rect);
-            		System.out.println("EXIT SET!");
+            		System.out.println("EXIT SET AT X:"+exitPoint.x+" AND Y:"+exitPoint.y+"!");
+            		
             	}
             	if (object.getProperties().containsKey("start")) {
             		Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -122,7 +124,7 @@ public class TestScreen implements Screen {
 		
 		playa.update(delta);
 		
-		if (playa.bounds.contains(exitPoint)) {
+		if (playa.bounds.overlaps(exitPoint)) {
 		loadMap(level++);
 		loadObjects();
 		loadAssets();
